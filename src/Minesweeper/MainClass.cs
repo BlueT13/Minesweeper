@@ -6,7 +6,8 @@ namespace Minesweeper
 	{
 		public static void Main(string[] args)
 		{
-            Console.WriteLine("Hello");
+            Console.Write("선택할 칸을 입력하시오(ex: 1 2):");
+			Console.ReadLine();
         }
 	}
 }
