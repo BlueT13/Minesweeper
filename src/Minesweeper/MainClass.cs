@@ -10,7 +10,7 @@ namespace Minesweeper
 			const int COL = 9;
 			const int MINES_COUNT = 10;
 
-			int[,] board = new int[ROW, COL]; //상수로
+			int[,] board = new int[ROW, COL];
 			int[,] mines;
 			bool[,] boardFlag = new bool[ROW, COL];
 
@@ -21,32 +21,35 @@ namespace Minesweeper
 			PrintMinesForTest(mines);
 			Console.WriteLine("----------------------------");
 			PrintMinesweeperBoard(board);
+			Console.WriteLine("----------------------------");
 
-			//// while문으로 play
-			//while ()
-			//{
-			//	ShowBoard(board, board_bools);
-			//	Console.Write("선택할 칸을 입력하시오(1 1 ~ 9 9): ");
-			//	//int[,] inputCoordinate = GetInput()
-			//	string input = Console.ReadLine();
-			//	string[] str = input.Split(" ");
-			//	int[] integers = new int[2];
-			//	for (int i = 0; i < integers.Length; i++)
-			//	{
-			//		integers[i] = int.Parse(str[i]);
-			//	}
+			// Game Play
+			while (true)
+			{
+				ShowBoard(board, boardFlag);
+				Console.Write("선택할 칸을 입력하시오(1 1 ~ 9 9): ");
+				//int[,] inputCoordinate = GetInput()
+				string input = Console.ReadLine();
+				string[] str = input.Split(" ");
+				int[] inputCoordinate = new int[2];
+				for (int i = 0; i < inputCoordinate.Length; i++)
+				{
+					inputCoordinate[i] = int.Parse(str[i]);
+				}
+				int x = inputCoordinate[0];
+				int y = inputCoordinate[1];
 
-			//	boardFlag[inputCoordinate[0], inputCoordinate[1]] = true;
-			//	if (지뢰아니었다면)
-			//	{
-			//		//Traversal => 0인칸들 열리게(재귀이용)
-			//	}
-			//	else
-			//	{
-			//		Console.WriteLine("지뢰를 밟았습니다!\nGame Over!");
-			//		break;
-			//	}
-			//}
+				boardFlag[x, y] = true;
+				if (board[x, y] != -1)
+				{
+					//Traversal => 0인칸들 열리게(재귀이용)
+				}
+				else
+				{
+					Console.WriteLine("지뢰를 밟았습니다!\nGame Over!");
+					break;
+				}
+			}
 		}
 
 		private static int[,] MakeMines(int row, int col, int minesCount)
@@ -63,6 +66,7 @@ namespace Minesweeper
 
 		private static int[,] MakeMinesweeperBoard(int row, int col, int[,] mines)
 		{
+			// 지뢰 = -1로 설정
 			int[,] minesweeperBoard = new int[row, col];
 			for (int i = 0; i < mines.GetLength(0); i++)
 			{
@@ -76,18 +80,23 @@ namespace Minesweeper
 			{
 				for (int j = 0; j < minesweeperBoard.GetLength(1); j++)
 				{
+					int mineCount = 0;
 					for (int k = i - 1; k <= i + 1; k++)
 					{
 						for (int l = j - 1; l <= j + 1; l++)
 						{
-							int mineCount = 0;
 							if (k < 0 || k >= 9 || l < 0 || l >= 9)
 								continue;
 
 							if (k == i && l == j)
 								continue;
+
+							if (minesweeperBoard[k, l] == -1)
+								mineCount++;
 						}
 					}
+					if (minesweeperBoard[i, j] != -1)
+						minesweeperBoard[i, j] = mineCount;
 				}
 			}
 			return minesweeperBoard;
@@ -108,7 +117,7 @@ namespace Minesweeper
 			{
 				for (int j = 0; j < board.GetLength(1); j++)
 				{
-					Console.Write(" {0} ", board[i, j]);
+					Console.Write(" {0, 2:0} ", board[i, j]);
 				}
 				Console.WriteLine();
 			}
