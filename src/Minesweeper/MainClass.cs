@@ -4,45 +4,37 @@ namespace Minesweeper
 {
 	internal class MainClass
 	{
+		private static int[,] board;
+		private static bool[,] boardFlag;
+
 		public static void Main(string[] args)
 		{
 			const int ROW = 9;
 			const int COL = 9;
 			const int MINES_COUNT = 10;
 
-			int[,] board = new int[ROW, COL];
-			int[,] mines;
-			bool[,] boardFlag = new bool[ROW, COL];
-
-			// 지뢰 생성, 지뢰배열값 출력
-			mines = MakeMines(ROW, COL, MINES_COUNT);
+			int[,] mines = MakeMines(ROW, COL, MINES_COUNT);
 			board = MakeMinesweeperBoard(ROW, COL, mines);
+			boardFlag = new bool[ROW, COL];
 
-			PrintMinesForTest(mines);
-			Console.WriteLine("----------------------------");
-			PrintMinesweeperBoard(board);
-			Console.WriteLine("----------------------------");
-
-			// Game Play
 			while (true)
 			{
-				ShowBoard(board, boardFlag);
+				ShowBoard();
 				Console.Write("선택할 칸을 입력하시오(1 1 ~ 9 9): ");
-				//int[,] inputCoordinate = GetInput()
-				string input = Console.ReadLine();
-				string[] str = input.Split(" ");
+				string[] str = Console.ReadLine().Split(" ");
+				// str[i]의 값이 1~9 숫자가 아니면 다시 칸 입력(21번째 줄로) while문으로
 				int[] inputCoordinate = new int[2];
 				for (int i = 0; i < inputCoordinate.Length; i++)
 				{
 					inputCoordinate[i] = int.Parse(str[i]);
 				}
-				int x = inputCoordinate[0];
-				int y = inputCoordinate[1];
+				int x = inputCoordinate[0] - 1;
+				int y = inputCoordinate[1] - 1;
 
 				boardFlag[x, y] = true;
 				if (board[x, y] != -1)
 				{
-					//Traversal => 0인칸들 열리게(재귀이용)
+					TraversalZeroNode(x, y);
 				}
 				else
 				{
@@ -55,13 +47,13 @@ namespace Minesweeper
 		private static int[,] MakeMines(int row, int col, int minesCount)
 		{
 			Random random = new Random();
-			int[,] mine = new int[minesCount, 2];
+			int[,] mines = new int[minesCount, 2];
 			for (int i = 0; i < minesCount; i++)
 			{
-				mine[i, 0] = random.Next(9);
-				mine[i, 1] = random.Next(9);
+				mines[i, 0] = random.Next(9);
+				mines[i, 1] = random.Next(9);
 			}
-			return mine;
+			return mines;
 		}
 
 		private static int[,] MakeMinesweeperBoard(int row, int col, int[,] mines)
@@ -80,6 +72,9 @@ namespace Minesweeper
 			{
 				for (int j = 0; j < minesweeperBoard.GetLength(1); j++)
 				{
+					if (minesweeperBoard[i, j] == -1)
+						continue;
+
 					int mineCount = 0;
 					for (int k = i - 1; k <= i + 1; k++)
 					{
@@ -95,10 +90,10 @@ namespace Minesweeper
 								mineCount++;
 						}
 					}
-					if (minesweeperBoard[i, j] != -1)
-						minesweeperBoard[i, j] = mineCount;
+					minesweeperBoard[i, j] = mineCount;
 				}
 			}
+
 			return minesweeperBoard;
 		}
 
@@ -123,17 +118,51 @@ namespace Minesweeper
 			}
 		}
 
-		private static void ShowBoard(int[,] board, bool[,] board_bools)
+		private static void TraversalZeroNode(int x, int y)
 		{
-			for (int i = 0; i < board_bools.GetLength(0); i++)
+			boardFlag[x, y] = true;
+
+			if (board[x, y] == 0)
 			{
-				for (int j = 0; j < board_bools.GetLength(1); j++)
+				for (int k = x - 1; k <= x + 1; k++)
 				{
-					if (board_bools[i, j] == true)
+					for (int l = y - 1; l <= y + 1; l++)
 					{
-						Console.WriteLine(" {0} ", board[i, j]);
+						if (k < 0 || k >= 9 || l < 0 || l >= 9)
+							continue;
+
+						if (k == x && l == y)
+							continue;
+
+						if (!boardFlag[k, l])
+						{
+							TraversalZeroNode(k, l);
+						}
 					}
 				}
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		private static void ShowBoard()
+		{
+			for (int i = 0; i < boardFlag.GetLength(0); i++)
+			{
+				for (int j = 0; j < boardFlag.GetLength(1); j++)
+				{
+					if (boardFlag[i, j] == true)
+					{
+						Console.Write(" {0, 2:0} ", board[i, j]);
+					}
+					else
+					{
+						Console.Write(" {0, 2:0} ", "*");
+					}
+				}
+				Console.WriteLine();
 			}
 		}
 	}
