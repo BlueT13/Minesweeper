@@ -20,17 +20,32 @@ namespace Minesweeper
 			while (true)
 			{
 				ShowBoard();
-				Console.Write("선택할 칸을 입력하시오(1 1 ~ 9 9): ");
-				string[] str = Console.ReadLine().Split(" ");
-				// str[i]의 값이 1~9 숫자가 아니면 다시 칸 입력(21번째 줄로) while문으로
 				int[] inputCoordinate = new int[2];
-				for (int i = 0; i < inputCoordinate.Length; i++)
+				while (true)
 				{
-					inputCoordinate[i] = int.Parse(str[i]);
+					Console.Write("선택할 칸을 입력하시오(1 1 ~ 9 9): ");
+					string[] str = Console.ReadLine().Split(" ");
+					try
+					{
+						if (str.Length != 2) throw new Exception();
+						for (int i = 0; i < str.Length; i++)
+						{
+							int num = int.Parse(str[i]);
+							if (num < 1 || num > 9)
+							{
+								throw new Exception();
+							}
+							inputCoordinate[i] = num;
+						}
+						break;
+					}
+					catch
+					{
+						Console.WriteLine("잘못된 입력입니다!");
+					}
 				}
 				int x = inputCoordinate[0] - 1;
 				int y = inputCoordinate[1] - 1;
-
 				boardFlag[x, y] = true;
 				if (board[x, y] != -1)
 				{
