@@ -73,7 +73,6 @@ namespace Minesweeper
 
 		private static int[,] MakeMinesweeperBoard(int row, int col, int[,] mines)
 		{
-			// 지뢰 = -1로 설정
 			int[,] minesweeperBoard = new int[row, col];
 			for (int i = 0; i < mines.GetLength(0); i++)
 			{
@@ -82,7 +81,6 @@ namespace Minesweeper
 				minesweeperBoard[x, y] = -1;
 			}
 
-			// 지뢰 주변에 숫자 배정
 			for (int i = 0; i < minesweeperBoard.GetLength(0); i++)
 			{
 				for (int j = 0; j < minesweeperBoard.GetLength(1); j++)
@@ -112,22 +110,20 @@ namespace Minesweeper
 			return minesweeperBoard;
 		}
 
-		private static void PrintMinesForTest(int[,] mines)
+		private static void ShowBoard()
 		{
-			for (int i = 0; i < mines.GetLength(0); i++)
+			for (int i = 0; i < boardFlag.GetLength(0); i++)
 			{
-				Console.Write("{0}, {1}", mines[i, 0], mines[i, 1]);
-				Console.WriteLine();
-			}
-		}
-
-		private static void PrintMinesweeperBoard(int[,] board)
-		{
-			for (int i = 0; i < board.GetLength(0); i++)
-			{
-				for (int j = 0; j < board.GetLength(1); j++)
+				for (int j = 0; j < boardFlag.GetLength(1); j++)
 				{
-					Console.Write(" {0, 2:0} ", board[i, j]);
+					if (boardFlag[i, j] == true)
+					{
+						Console.Write(" {0, 2:0} ", board[i, j]);
+					}
+					else
+					{
+						Console.Write(" {0, 2:0} ", "*");
+					}
 				}
 				Console.WriteLine();
 			}
@@ -162,20 +158,22 @@ namespace Minesweeper
 			}
 		}
 
-		private static void ShowBoard()
+		private static void PrintMinesForTest(int[,] mines)
 		{
-			for (int i = 0; i < boardFlag.GetLength(0); i++)
+			for (int i = 0; i < mines.GetLength(0); i++)
 			{
-				for (int j = 0; j < boardFlag.GetLength(1); j++)
+				Console.Write("{0}, {1}", mines[i, 0], mines[i, 1]);
+				Console.WriteLine();
+			}
+		}
+
+		private static void PrintMinesweeperBoard(int[,] board)
+		{
+			for (int i = 0; i < board.GetLength(0); i++)
+			{
+				for (int j = 0; j < board.GetLength(1); j++)
 				{
-					if (boardFlag[i, j] == true)
-					{
-						Console.Write(" {0, 2:0} ", board[i, j]);
-					}
-					else
-					{
-						Console.Write(" {0, 2:0} ", "*");
-					}
+					Console.Write(" {0, 2:0} ", board[i, j]);
 				}
 				Console.WriteLine();
 			}
